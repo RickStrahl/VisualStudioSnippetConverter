@@ -63,7 +63,13 @@ namespace Westwind.SnippetConverter.ConsoleApp
         public override void Parse()
         {
             SourceFileOrDirectory = Args[0];
-            TargetFile = ParseStringParameterSwitch("-o", null);            
+            SourceFileOrDirectory = Environment.ExpandEnvironmentVariables(SourceFileOrDirectory);
+            
+            
+            TargetFile = ParseStringParameterSwitch("-o", null);
+            if (!string.IsNullOrEmpty(TargetFile))
+                TargetFile = Environment.ExpandEnvironmentVariables(TargetFile);
+            
             Verbose = ParseParameterSwitch("-v");
             ShowFileInExplorer = ParseParameterSwitch("-s");
             Mode = ParseStringParameterSwitch("-m",null);

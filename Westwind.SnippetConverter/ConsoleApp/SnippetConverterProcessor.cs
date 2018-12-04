@@ -32,6 +32,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -53,12 +54,14 @@ namespace Westwind.SnippetConverter.ConsoleApp
 
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var ver = version.Major + "." + version.Minor + (version.Build > 0 ? "." + version.Build : string.Empty);
-            Console.WriteLine($"West Wind HTML Packager v{ver}");
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            WriteConsole($"Visual Studio Snippet Converter v{ver}", MessageModes.Information);
+            WriteConsole($"- Rick Strahl, West Wind Technologies", MessageModes.Information);
+
+
             Console.WriteLine($"Processing {Parser.SourceFileOrDirectory}...");
 
-            if (Parser.Mode == "vs-vscode" && Parser.DirectoryMode)
+            if (Parser.Mode == "vs-vscode")
             {
                 if (string.IsNullOrEmpty(Parser.TargetFile))
                 {
@@ -66,50 +69,69 @@ namespace Westwind.SnippetConverter.ConsoleApp
                         MessageModes.Error);
                     return false;
                 }
-                
-                var snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory);
-                if (snippets == null || snippets.Count < 1)
-                {
-                    WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory,MessageModes.Error);
-                    return false;
-                }
 
                 try
                 {
-                    VsCodeSnippet.ToFile(snippets, Parser.TargetFile, true, Parser.SnippetPrefix);
+                    List<VisualStudioSnippet> snippets;
+                    if (Parser.DirectoryMode)
+                    {
+                        snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory);
+                        if (snippets == null || snippets.Count < 1)
+                        {
+                            WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory,
+                                MessageModes.Error);
+                            return false;
+                        }
+
+                    }
+                    else
+                    {
+                        var snippet = VisualStudioSnippet.ParseFromFile(Parser.SourceFileOrDirectory);
+                        if (snippet == null)
+                        {
+                            WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory, MessageModes.Error);
+                            return false;
+                        }
+                        snippets = new List<VisualStudioSnippet>() { snippet };
+                    }
+
+                    VsCodeSnippet.ToFile(snippets, Parser.TargetFile, false, Parser.SnippetPrefix);
                 }
                 catch (Exception ex)
                 {
-                    WriteConsole("Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory + "\n" + ex.Message,MessageModes.Error);
+                    WriteConsole("Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory
+                                + "\n" + ex.Message, MessageModes.Error);
                     return false;
                 }
 
-                if(Parser.ShowFileInExplorer)
+                if (Parser.ShowFileInExplorer)
                     Utils.OpenFileInExplorer(Parser.TargetFile);
             }
             else if (Parser.Mode == "vs-rider" && Parser.DirectoryMode)
             {
-                
+
                 var snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory);
                 if (snippets == null || snippets.Count < 1)
                 {
-                    WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory,MessageModes.Error);
+                    WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory, MessageModes.Error);
                     return false;
                 }
 
                 try
                 {
-                    JetBrainsLiveTemplate.AddVisualStudioSnippets(Parser.SourceFileOrDirectory,Parser.SnippetPrefix);
+                    JetBrainsLiveTemplate.AddVisualStudioSnippets(Parser.SourceFileOrDirectory, Parser.SnippetPrefix);
                 }
                 catch (Exception ex)
                 {
-                    WriteConsole("Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory + "\n" + ex.Message,MessageModes.Error);
+                    WriteConsole("Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory + "\n" + ex.Message, MessageModes.Error);
                     return false;
                 }
 
-                if(Parser.ShowFileInExplorer)
-                    Utils.OpenFileInExplorer(Parser.TargetFile);
+
             }
+
+            if (Parser.ShowFileInExplorer)
+                Utils.OpenFileInExplorer(Parser.TargetFile);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Done. Created {Parser.TargetFile}.");
@@ -130,10 +152,8 @@ namespace Westwind.SnippetConverter.ConsoleApp
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
             else if (mode == MessageModes.Information)
                 Console.ForegroundColor = ConsoleColor.Yellow;
-            else if (mode == MessageModes.Information2)
+            else if (mode == MessageModes.Success)
                 Console.ForegroundColor = ConsoleColor.Green;
-            else
-                Console.ForegroundColor = ConsoleColor.White;
 
             Console.WriteLine(msg);
 
@@ -148,23 +168,24 @@ namespace Westwind.SnippetConverter.ConsoleApp
 
         public virtual void OnShowMessage(string message)
         {
-            
+
             if (ShowMessage != null)
                 ShowMessage(message);
             else
                 Console.WriteLine(message);
         }
 
-      
+
     }
-    
-    
+
+
     public enum MessageModes
     {
         Information,
-        Information2,
+        Success,
         Error,
-        Warning
+        Warning,
+        None
     }
 
 }

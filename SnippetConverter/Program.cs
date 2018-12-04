@@ -17,7 +17,7 @@ namespace SnippetConverter
                 string options =
                     $@"
 Visual Studio Snippet Converter v{version}
-(c) Rick Strahl, West Wind Technologies
+- Rick Strahl, West Wind Technologies
 
 Syntax:
 -------
@@ -32,6 +32,7 @@ Options:
 sourceFileOrDirectory  Either an individual snippet file, or a source folder
 -m,--mode              vs-vscode  (default)
                        vs-rider
+-d                     display the target file in Explorer
 -o <outputFile>        Output file where snippets are generated into
                        (Rider uses a default configuration file)
 
@@ -39,11 +40,11 @@ Examples:
 ---------
 # vs-vscode: Individual VS Snippet
 SnippetConverter ""%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets\proIPC.snippet"" 
-                 ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets""
+                 -o ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets"" -d
 
 # vs-vscode: All VS Snippets in a folder
 SnippetConverter ""%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets"" 
-                 ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets""
+                 -o ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets"" -d
 ";
 
                 Console.WriteLine(options);
@@ -74,7 +75,4 @@ SnippetConverter ""%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visu
 #endif
         }
     }
-}
-
-}
 }

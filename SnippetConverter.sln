@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1BFFEA1F-E3E0-4BBE-9F26-3C6C8F02A355}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnippetConverter", "SnippetConverter\SnippetConverter.csproj", "{1733AFDA-040A-4676-986D-D0A3DF39C787}"
