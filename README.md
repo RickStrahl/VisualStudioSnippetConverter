@@ -20,14 +20,14 @@ A .NET Core Console application via .NET tooling lets you run the console applic
 ### Using the .NET Core Console Application
 The easiest way to use this tool is to install the dotnet tool from NuGet:
 
+> **The package is not available yet!**
+
 ```
 install-package dotnet-snippetconverter
 ```
 
 **Requires:**  
 [.NET Core 2.1 SDK](https://dotnet.microsoft.com/downloadhttps://dotnet.microsoft.com/download) or later
-
-&copy;
 
 Once installed you should able to run:
 
@@ -37,9 +37,17 @@ snippetconverter
 
 from the Console.
 
+Alternately you can using `dotnet run` run from the project folder:
+
+```
+dotnet run snippetconverter
+```
+
+### Command Line Options
+
 ```
 Visual Studio Snippet Converter
-(c) Rick Strahl, West Wind Technologies
+- Rick Strahl, West Wind Technologies
 
 Syntax:
 -------
@@ -54,19 +62,20 @@ Options:
 sourceFileOrDirectory  Either an individual snippet file, or a source folder
 -m,--mode              vs-vscode  (default)
                        vs-rider
+-d                     display the target file in Explorer
 -o <outputFile>        Output file where snippets are generated into
-                       (Ignored for Rider as it uses a global configuration file)
+                       (Rider uses a default configuration file)
 
-Examples (each on a single line):
+Examples:
 ---------
 # vs-vscode: Individual VS Snippet
-SnippetConverter ""%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets\proIPC.snippet"" 
-                 -o ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets"" -d
-                 
+SnippetConverter "%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets\proIPC.snippet" 
+                 -o "%APPDATA%\Code\User\snippets\ww-csharp.code-snippets" -d
 
 # vs-vscode: All VS Snippets in a folder
-SnippetConverter ""%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets"" 
-                 ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets""
+SnippetConverter "%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets"
+                 -o ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets"" -d
 ```
+
 
 
