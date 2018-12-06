@@ -2,7 +2,7 @@
 
 This is a small hacky project to convert Visual Studio Code Snippets to:
 
-* Visual Studio Code Code Snippets
+* VS Code Code Snippets
 * Rider Live Templates
 
 
