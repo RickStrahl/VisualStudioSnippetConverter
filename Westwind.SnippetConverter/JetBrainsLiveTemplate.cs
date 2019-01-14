@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
-using Newtonsoft.Json;
-using Westwind.Utilities;
+
 
 namespace Westwind.SnippetConverter
 {
@@ -65,13 +63,13 @@ namespace Westwind.SnippetConverter
             xml = $@"<s:Boolean x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/@KeyIndexDefined"">True</s:Boolean>
 <s:Boolean x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Applicability/=Live/@EntryIndexedValue"">True</s:Boolean>
 <s:Boolean x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Reformat/@EntryValue"">True</s:Boolean>
-<s:String x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Shortcut/@EntryValue"">{XmlUtils.XmlString(Shortcut)}</s:String>
+<s:String x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Shortcut/@EntryValue"">{Utils.XmlString(Shortcut)}</s:String>
 <s:Boolean x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/ShortenQualifiedReferences/@EntryValue"">True</s:Boolean>
 
 <s:Boolean x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Scope/=C3001E7C0DA78E4487072B7E050D86C5/@KeyIndexDefined"">True</s:Boolean>
 <s:String x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Scope/=C3001E7C0DA78E4487072B7E050D86C5/Type/@EntryValue"">{scope}</s:String>
 
-<s:String x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Text/@EntryValue"">{XmlUtils.XmlString(Code)}</s:String>";
+<s:String x:Key=""/Default/PatternsAndTemplates/LiveTemplates/Template/={Id}/Text/@EntryValue"">{Utils.XmlString(Code)}</s:String>";
             
 
             int varCount = 0;
@@ -152,15 +150,16 @@ namespace Westwind.SnippetConverter
         /// <summary>
         /// Attaches a list of Visual Studio snippets to a root JSON instance
         /// </summary>
-        /// <param name="snippets"></param>
-        /// <param name="rootJson"></param>
+        /// <param name="folder">Folder to import</param>
+        /// <param name="snippetPrefix">optional prefix to prepend to template names</param>
+        /// <param name="recursive">search child folders if true</param>
         /// <returns></returns>
-        public static void AddVisualStudioSnippets(string folder,string snippetPrefix = null)
+        public static void AddVisualStudioSnippets(string folder,string snippetPrefix = null, bool recursive = false)
         {
             if (!Directory.Exists(folder))
                 throw new DirectoryNotFoundException("Snippet folder doesn't exist: " + folder);
 
-            var snippets = VisualStudioSnippet.ParseSnippetFolder(folder);
+            var snippets = VisualStudioSnippet.ParseSnippetFolder(folder, recursive);
             if (snippets == null)
                 return;
             

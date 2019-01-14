@@ -2,21 +2,20 @@
 
 <img src="SnippetConverterIcon.png" height=200>
 
-This is a small hacky project to convert Visual Studio Code Snippets (XML .snippet files) to:
+This is a small hacky project to convert Visual Studio's Code Snippets (XML .snippet files) to:
 
-* VS Code Code Snippets
-* Rider Live Templates
+* VS Code Code Snippets 
+* Rider Live Templates (experimental)
 
-It consists of a library that can take individual Visual Studio snippets or a folder full of `.snippet` files, and create `.code-snippet` file with the snippets in VS Code, or create the appropriate live templates for JetBrains Rider and add it to the default configuration file. 
+This tool is available as a **.NET SDK Tool** that is easily installable as a command line utility using the .NET Core SDK 2.1 or later.
 
-In VS Code the snippets are updated if they exist, in Rider Snippets can only be added to the global configuration (ie. you end up duplicating if you run multiple times).
+## Visual Studio Code Conversion
+This tool can take individual Visual Studio snippets, a folder full of `.snippet` files, or an entire folder hierarchy and create or update a single `.code-snippet` file with each of the the snippets added from Visual Studio into a VS Code snippet file.
 
-This tooling provides both the library and a .NET Core Console application and .NET Core Tooling package.
+> Note that Rider support is limited to C#,VB.NET and HTML snippets only. Other language templates are stored in a completely different format and are currently not supported. If there's interest in that we might consider adding it later - for now this isn't supported.
 
-### Using the .NET Core Console Application
-The easiest way to use this tool is to install the dotnet tool from NuGet:
-
-> **The package is not available yet!**
+### Using the .NET SDK Tool Console Application
+The easiest way to use this tool is to install the dotnet tool from NuGet. To install:
 
 ```ps
 install-package dotnet-snippetconverter
@@ -31,10 +30,9 @@ Once installed you should able to run:
 snippetconverter
 ```
 
-from the Console.
+from the Terminal and get the usage Help screen.
 
 Alternately, if you just use the source code to compile the project, you can use
-
 
 ```
 dotnet run
@@ -42,7 +40,7 @@ dotnet run
 
 from the project folder.
 
-Or in the publish folder:
+Or in the `publish` folder one of these:
 
 ```
 snippetconverter
@@ -50,14 +48,15 @@ snippetconverter
 
 ### Command Line Options
 
-```
+```text
 Visual Studio Snippet Converter
 -------------------------------
 © Rick Strahl, West Wind Technologies
 
 Syntax:
 -------
-SnippetConverter <sourceFileOrDirectory> -o <outputFile> -d
+SnippetConverter <sourceFileOrDirectory> -o <outputFile> 
+                 --mode --prefix --recurse --display
 
 Commands:
 ---------
@@ -66,26 +65,43 @@ HELP || /?          This help display
 Options:
 --------
 sourceFileOrDirectory  Either an individual snippet file, or a source folder
+                       Optional special start syntax using `~` to point at User Code Snippets folder:
+                       ~      -  Visual Studio User Code Snippets folder (latest version installed)
+                       ~2017  -  Visual Studio User Code Snippets folder (specific VS version 2019-2012)                       
+
+-o <outputFile>        Output file where VS Code snippets are generated into (ignored by Rider)                        
+                       %APPDATA%\Code\User\snippets\ww-my-codesnippets.code-snippets
+                       ~\ww-my-codesnippets.code-snippets
+                       ~            -   defaults to visualstudio-exported.code-snippets
+                       
+
 -m,--mode              vs-vscode  (default)
-                       vs-rider
+                       vs-rider   experimental - (C#,VB.NET,html only)
 -d                     display the target file in Explorer
--o <outputFile>        VS Code: Output file where one or more snippets are generated into
-                       Rider: not used - output goes into the Rider Configuration file
+-r                     if specifying a source folder recurses into child folders
+-p,--prefix            snippet prefix generate for all snippets exported
+                       Example: `ww-` on a snippet called `ifempty` produces `ww-ifempty`
 
 Examples:
 ---------
-# vs-vscode: Individual VS Snippet
-SnippetConverter "%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets\proIPC.snippet" 
-                 -o "%APPDATA%\Code\User\snippets\ww-csharp.code-snippets" -d
+# vs-vscode: Individual VS Snippet (output to %APPDATA%\Code\User\snippets)
+SnippetConverter "~2017\Visual C#\My Code Snippets\proIPC.snippet" 
+                 -o ""~\ww-csharp.code-snippets"" -d
 
-# vs-vscode: All VS Snippets in a folder
-SnippetConverter "%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets"
-                 -o ""%APPDATA%\Code\User\snippets\ww-csharp.code-snippets"" -d
+# vs-vscode: All the user VS Snippets and in recursive child folers
+SnippetConverter ~2017\ -o ~\ww-csharp.code-snippets" -r -d
+
+# vs-vscode: All the user VS Snippets and in recursive child folers
+SnippetConverter ~2017\ -o "~\Code\User\snippets\ww-csharp.code-snippets" -r -d
+
+# vs-vscode: All defaults: Latest version of VS, all snippets to  %APPDATA%\Code\User\snippets\visualstudio-export.code-snippets
+SnippetConverter -r -d
 
 # vs-rider: Individual VS Snippet
-SnippetConverter "%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets\proIPC.snippet"
+SnippetConverter "~2017\Visual C#\My Code Snippets\proIPC.snippet" -m vs-rider 
 
-SnippetConverter "%USERPROFILE%\Documents\Visual Studio 2017\Code Snippets\Visual C#\My Code Snippets"
+# vs-rider: All VS Snippets in a folder
+SnippetConverter "~2017\Visual C#\My Code Snippets" -m vs-rider
 ```
 
 
@@ -103,7 +119,7 @@ All source code is copyright **West Wind Technologies**, regardless of changes m
 <!-- 
 > It's free as in free beer, but if this saved you some time and you're overflowing with gratitude you can buy me a beer:
 >
-> [Make a Donation with PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJJHMXWYPT3E2)
+> [**Donate with PayPal**](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DJJHMXWYPT3E2)
 -->
 
 ## Warranty Disclaimer: No Warranty!

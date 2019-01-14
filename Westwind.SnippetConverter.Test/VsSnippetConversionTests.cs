@@ -42,8 +42,7 @@ namespace Westwind.SnippetConverter.Test
 
         [Test]
         public void CreateVsCodeSnippetfromVisualStudioSnippetOnRootTest()
-        {
-            var converter = new SnippetToCodeSnippet();
+        {            
             var snippet = VisualStudioSnippet.ParseFromFile(
                 "C:\\Users\\rstrahl\\Documents\\Visual Studio 2017\\Code Snippets\\Visual Web Developer\\My HTML Snippets\\WebConnection\\ww-fv.snippet");
 

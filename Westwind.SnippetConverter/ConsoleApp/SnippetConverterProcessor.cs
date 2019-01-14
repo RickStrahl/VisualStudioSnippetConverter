@@ -51,12 +51,17 @@ namespace Westwind.SnippetConverter.ConsoleApp
         public bool Process()
         {
             var consoleColor = Console.ForegroundColor;
+            
+            var version = Assembly.GetEntryAssembly().GetName().Version;
+            var ver = version.Major + "." + version.Minor +
+                      (version.Build > 0 ? "." + version.Build : string.Empty);
+            
+            var header = $"Visual Studio Snippet Converter v{ver}";
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var ver = version.Major + "." + version.Minor + (version.Build > 0 ? "." + version.Build : string.Empty);
-
-            WriteConsole($"Visual Studio Snippet Converter v{ver}", MessageModes.Information);
-            WriteConsole($"- Rick Strahl, West Wind Technologies", MessageModes.Information);            
+            WriteConsole(header, MessageModes.Information);
+            WriteConsole(Utils.Replicate("-", header.Length),MessageModes.Information);
+           
+            WriteConsole($"(c) Rick Strahl, West Wind Technologies{Environment.NewLine}", MessageModes.Information);            
 
             Console.WriteLine($"Processing {Parser.SourceFileOrDirectory}...");
 
@@ -95,48 +100,63 @@ namespace Westwind.SnippetConverter.ConsoleApp
                     }
 
                     VsCodeSnippet.ToFile(snippets, Parser.TargetFile, false, Parser.SnippetPrefix);
+
+                    WriteConsole($"Processed: {snippets.Count} snippet(s)",MessageModes.Success);
+                    WriteConsole($"To File:   {Parser.TargetFile}",MessageModes.Success);
                 }
                 catch (Exception ex)
                 {
                     WriteConsole("Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory
                                 + "\n" + ex.Message, MessageModes.Error);
+                    Console.ForegroundColor = consoleColor;
                     return false;
                 }
 
                 if (Parser.ShowFileInExplorer)
                     Utils.OpenFileInExplorer(Parser.TargetFile);
             }
-            else if (Parser.Mode == "vs-rider" && Parser.DirectoryMode)
-            {                
-                var snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory);
-                if (snippets == null || snippets.Count < 1)
+            else if (Parser.Mode == "vs-rider")
+            {
+                if (Parser.DirectoryMode)
                 {
-                    WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory, MessageModes.Error);
-                    return false;
-                }
+                    var snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory, Parser.Recurse);
+                    if (snippets == null || snippets.Count < 1)
+                    {
+                        var msg = $"Error: No snippets found in path: {Parser.SourceFileOrDirectory}.";
 
-                try
-                {
-                    JetBrainsLiveTemplate.AddVisualStudioSnippets(Parser.SourceFileOrDirectory, Parser.SnippetPrefix);
+                        if (!Parser.Recurse)
+                            msg += " You can try using the `-r` flag to recurse folder.";
 
-                    // Target file is usually empty so get the global config file
-                    if (string.IsNullOrEmpty(Parser.TargetFile))
-                        Parser.TargetFile = JetBrainsLiveTemplate.GetRiderConfigurationFile();
-                }
-                catch (Exception ex)
-                {
-                    WriteConsole("Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory + "\n" + ex.Message, MessageModes.Error);
-                    return false;
-                }
+                        WriteConsole(msg, MessageModes.Error);
+                        return false;
+                    }
 
+                    try
+                    {
+                        JetBrainsLiveTemplate.AddVisualStudioSnippets(snippets, Parser.SnippetPrefix);
+
+                        // Target file is usually empty so get the global config file
+                        if (string.IsNullOrEmpty(Parser.TargetFile))
+                            Parser.TargetFile = JetBrainsLiveTemplate.GetRiderConfigurationFile();
+
+                        WriteConsole($"Processed: {snippets.Count} snippet(s)", MessageModes.Success);
+                        WriteConsole($"To File:   {Parser.TargetFile}", MessageModes.Success);
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteConsole(
+                            "Error: Snippet conversion failed for: " + Parser.SourceFileOrDirectory + "\n" + ex.Message,
+                            MessageModes.Error);
+                        Console.ForegroundColor = consoleColor;
+                        return false;
+                    }
+                }                
 
             }
 
             if (Parser.ShowFileInExplorer)
                 Utils.OpenFileInExplorer(Parser.TargetFile);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Done. Created {Parser.TargetFile}.");
             Console.ForegroundColor = consoleColor;
 
             return true;

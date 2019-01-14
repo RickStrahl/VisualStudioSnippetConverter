@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Westwind.Utilities;
 
 namespace Westwind.SnippetConverter
 {
@@ -189,7 +189,7 @@ namespace Westwind.SnippetConverter
 
             code = code.Replace($"{delim}end{delim}", "$0");
 
-            vsCode.Body = StringUtils.GetLines(code);
+            vsCode.Body = Utils.GetLines(code);
 
 
             return vsCode;
@@ -219,6 +219,31 @@ namespace Westwind.SnippetConverter
 
         #endregion
 
+        /// <summary>
+        /// Fixes up the snippet path by adjusting for OS platform,
+        /// expanding ~ and environment variables.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        public static string FixupSnippetPath(string folder)
+        {
+            if (string.IsNullOrEmpty(folder))
+                return folder;
+
+            folder = Environment.ExpandEnvironmentVariables(folder);
+            if (folder.StartsWith("~"))
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    var snipPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Code\User\snippets");
+                    return folder.Replace("~", snipPath);
+                }
+
+                return folder;
+            }
+
+            return folder;
+        }
     }
 }
 

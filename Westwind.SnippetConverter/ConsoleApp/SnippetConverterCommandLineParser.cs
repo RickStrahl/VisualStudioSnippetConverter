@@ -67,20 +67,32 @@ namespace Westwind.SnippetConverter.ConsoleApp
 
         public override void Parse()
         {
+            Mode = ParseStringParameterSwitch("-m", null);
+            if (string.IsNullOrEmpty(Mode))
+                Mode = ParseStringParameterSwitch("--mode", "vs-vscode");
+            Mode = Mode.ToLower();
+
             SourceFileOrDirectory = Args[0];
             SourceFileOrDirectory = Environment.ExpandEnvironmentVariables(SourceFileOrDirectory);
-                        
+
             TargetFile = ParseStringParameterSwitch("-o", null);
-            if (!string.IsNullOrEmpty(TargetFile))
-                TargetFile = Environment.ExpandEnvironmentVariables(TargetFile);
+            if (string.IsNullOrEmpty(TargetFile))
+                TargetFile = ParseStringParameterSwitch("--output", null);
+
+            if (Mode == "vs-vscode")
+            {
+                if (string.IsNullOrEmpty(TargetFile))
+                    TargetFile = "~\\visualstudio-exported.code-snippets";
+                TargetFile = VsCodeSnippet.FixupSnippetPath(TargetFile);                
+            }
+                
             
             Verbose = ParseParameterSwitch("-v");
             Recurse = ParseParameterSwitch("-r");
 
             ShowFileInExplorer = ParseParameterSwitch("-d");
-            Mode = ParseStringParameterSwitch("-m",null);
-            if (string.IsNullOrEmpty(Mode))
-                Mode = ParseStringParameterSwitch("--mode", "vs-vscode");
+            
+          
             
             SnippetPrefix = ParseStringParameterSwitch("-p",null);
             if (string.IsNullOrEmpty(SnippetPrefix))

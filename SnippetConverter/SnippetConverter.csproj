@@ -15,10 +15,10 @@
     <Description>
       This tool converts Visual Studio Code Snippets to:
       * Visual Studio Code Snippets
-      * Jetbrains Rider Live Templates
+      * Jetbrains Rider Live Templates (experimental and limited)
 
       It can take individual Visual Studio snippets or a folder full of .snippet files, and create 
-      .code-snippet file with the snippets. In VS Code the snippets are updated, in Rider Snippets 
+      .code-snippets file with the snippets. In VS Code the snippets are updated, in Rider Snippets 
       can only be added to the global configuration.
     </Description>
     <PackageProjectUrl>https://github.com/RickStrahl/VisualStudioSnippetConverter</PackageProjectUrl>

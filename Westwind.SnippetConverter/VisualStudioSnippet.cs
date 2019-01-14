@@ -182,19 +182,19 @@ namespace Westwind.SnippetConverter
             folder = Environment.ExpandEnvironmentVariables(folder);
             if (folder.StartsWith("~"))
             {
-                var part = "\\Code Snippets\\";
+                var part = "\\Code Snippets";
 
-                if (folder.Contains("~\\2017\\"))
-                    return folder.Replace("~\\2017\\", GetUserVisualStudioVersionFolder("2017") + part);
+                if (folder.Contains("~2017"))
+                    return folder.Replace("~2017", GetUserVisualStudioVersionFolder("2017") + part);
 
-                if (folder.Contains("~\\2019\\"))
-                    return folder.Replace("~\\2019\\", GetUserVisualStudioVersionFolder("2019") + part);
-                if (folder.Contains("~\\2021\\"))
-                    return folder.Replace("~\\2021\\", GetUserVisualStudioVersionFolder("2021") + part);
-                if (folder.Contains("~\\2015\\"))
-                    return folder.Replace("~\\2015\\", GetUserVisualStudioVersionFolder("2015") + part);
-                if (folder.Contains("~\\2012\\"))
-                    return folder.Replace("~\\2012\\", GetUserVisualStudioVersionFolder("2012") + part);
+                if (folder.Contains("~2019"))
+                    return folder.Replace("~2019", GetUserVisualStudioVersionFolder("2019") + part);
+                if (folder.Contains("~2021"))
+                    return folder.Replace("~2021", GetUserVisualStudioVersionFolder("2021") + part);
+                if (folder.Contains("~2015\\"))
+                    return folder.Replace("~2015", GetUserVisualStudioVersionFolder("2015") + part);
+                if (folder.Contains("~2012"))
+                    return folder.Replace("~2012", GetUserVisualStudioVersionFolder("2012") + part);
 
                 return folder.Replace("~\\",GetUserVisualStudioVersionFolder() + part);
             }
