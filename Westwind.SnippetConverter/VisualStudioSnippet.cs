@@ -194,7 +194,7 @@ namespace Westwind.SnippetConverter
                     return folder.Replace("~2019", GetUserVisualStudioVersionFolder("2019") + part);
                 if (folder.Contains("~2021"))
                     return folder.Replace("~2021", GetUserVisualStudioVersionFolder("2021") + part);
-                if (folder.Contains("~2015\\"))
+                if (folder.Contains("~2015"))
                     return folder.Replace("~2015", GetUserVisualStudioVersionFolder("2015") + part);
                 if (folder.Contains("~2012"))
                     return folder.Replace("~2012", GetUserVisualStudioVersionFolder("2012") + part);
