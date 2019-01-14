@@ -146,37 +146,8 @@ namespace Westwind.SnippetConverter
         }
 
         #endregion
-        
 
-        #region Helpers
-
-        /// <summary>
-        /// Finds the Rider Configuration folder in the Home path
-        /// </summary>
-        /// <returns>Rider config path or null if not found.</returns>
-        public static string GetRiderConfigFolder()
-        {
-            var home = Environment.GetEnvironmentVariable("USERPROFILE");
-            if (string.IsNullOrEmpty(home))
-                home = Environment.GetEnvironmentVariable("HOME");
-
-
-            var folder = Directory.GetDirectories(home, ".Rider20*.*")?.Max(s => s);
-            if (!Directory.Exists(folder))
-                return null;
-
-            return folder;
-        }
-
-        /// <summary>
-        /// Returns Rider's GlobalSettingsStorage.DotSettings file.
-        /// </summary>
-        /// <returns></returns>
-        public static string GetRiderConfigurationFile()
-        {
-            return Path.Combine(GetRiderConfigFolder(), @"config\resharper-host\GlobalSettingsStorage.DotSettings");
-        }
-        
+        #region Worker Methods
 
         /// <summary>
         /// Attaches a list of Visual Studio snippets to a root JSON instance
@@ -220,6 +191,36 @@ namespace Westwind.SnippetConverter
         
         #endregion
 
+
+        #region Helpers
+
+        /// <summary>
+        /// Finds the Rider Configuration folder in the Home path
+        /// </summary>
+        /// <returns>Rider config path or null if not found.</returns>
+        public static string GetRiderConfigFolder()
+        {
+            var home = Environment.GetEnvironmentVariable("USERPROFILE");
+            if (string.IsNullOrEmpty(home))
+                home = Environment.GetEnvironmentVariable("HOME");
+
+
+            var folder = Directory.GetDirectories(home, ".Rider20*.*")?.Max(s => s);
+            if (!Directory.Exists(folder))
+                return null;
+
+            return folder;
+        }
+
+        /// <summary>
+        /// Returns Rider's GlobalSettingsStorage.DotSettings file.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetRiderConfigurationFile()
+        {
+            return Path.Combine(GetRiderConfigFolder(), @"config\resharper-host\GlobalSettingsStorage.DotSettings");
+        }
+        #endregion
     }
 
 

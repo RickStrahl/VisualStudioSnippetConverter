@@ -54,17 +54,16 @@ namespace Westwind.SnippetConverter
         /// </summary>
         /// <param name="rootJson"></param>
         public void AttachToJsonRoot(JObject rootJson)
-        {
-            var snippet = this;
-            var title = snippet.Title.ToLower().Replace(" ", "-");
-            var node = rootJson.SelectToken(title);
-            if (node != null)
-                rootJson.Remove(title);
+        {            
+            var title = Title.ToLower().Replace(" ", "-");
+
+            if (rootJson.TryGetValue(title, out JToken token))                           
+                rootJson.Remove(title);             
 
             var ser = JsonSerializer.Create(SerializerSettings);
-            JObject jSnippet = JObject.FromObject(snippet,ser);
+            JObject jSnippet = JObject.FromObject(this,ser);
 
-            rootJson.Add(title,jSnippet);
+            rootJson.Add(title, jSnippet);            
         }
 
 
@@ -90,13 +89,7 @@ namespace Westwind.SnippetConverter
             else
                 rootJson = new JObject();
 
-            var snippet = this;
-            var node = rootJson.SelectToken(snippet.Title);
-            if (node != null)
-                rootJson.Remove(snippet.Title);
-
-            JObject jSnippet = JObject.FromObject(snippet);
-            rootJson.Add(snippet.Title, jSnippet);
+            AttachToJsonRoot(rootJson);
 
             using (var sw = new StreamWriter(snippetFile))
             {
@@ -132,6 +125,8 @@ namespace Westwind.SnippetConverter
                         rootJson = JObject.Load(tr);
                     }
                 }
+
+                //rootJson = rootJson.First as JObject;
             }
             else
                 rootJson = new JObject();

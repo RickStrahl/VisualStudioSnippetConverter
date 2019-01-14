@@ -1,15 +1,42 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <version>0.1</version>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
-        <AssemblyName>SnippetConverter</AssemblyName>
-        <RootNamespace>SnippetConverter</RootNamespace>
-    </PropertyGroup>
+  <PropertyGroup>
+    <version>0.1</version>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>SnippetConverter</AssemblyName>
+    <RootNamespace>SnippetConverter</RootNamespace>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Westwind.SnippetConverter\Westwind.SnippetConverter.csproj" />
-    </ItemGroup>
+    <PackageId>dotnet-snippetconverter</PackageId>
+    <Authors>Rick Strahl</Authors>
+    <Company>West Wind Technolologies</Company>
+    <Product>Visual Studio Snippet Converter</Product>
+    <Copyright>© Rick Strahl - West Wind Technologies, 2019</Copyright>
+    <Description>
+      This tool converts Visual Studio Code Snippets to:
+      * Visual Studio Code Snippets
+      * Jetbrains Rider Live Templates
+
+      It can take individual Visual Studio snippets or a folder full of .snippet files, and create 
+      .code-snippet file with the snippets. In VS Code the snippets are updated, in Rider Snippets 
+      can only be added to the global configuration.
+    </Description>
+    <PackageProjectUrl>https://github.com/RickStrahl/VisualStudioSnippetConverter</PackageProjectUrl>
+    <License>https://github.com/RickStrahl/VisualStudioSnippetConverter#License</License>
+    <RepositoryUrl>https://github.com/RickStrahl/VisualStudioSnippetConverter</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>visual-studio vscode snippet rider jetbrains conversion</PackageTags>
+    <PackageIconUrl>https://github.com/RickStrahl/VisualStudioSnippetConverter/SnippetConverterIcon.png</PackageIconUrl>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>snippetconverter</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Westwind.SnippetConverter\Westwind.SnippetConverter.csproj" />
+  </ItemGroup>
 
 </Project>

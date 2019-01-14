@@ -56,8 +56,7 @@ namespace Westwind.SnippetConverter.ConsoleApp
             var ver = version.Major + "." + version.Minor + (version.Build > 0 ? "." + version.Build : string.Empty);
 
             WriteConsole($"Visual Studio Snippet Converter v{ver}", MessageModes.Information);
-            WriteConsole($"- Rick Strahl, West Wind Technologies", MessageModes.Information);
-
+            WriteConsole($"- Rick Strahl, West Wind Technologies", MessageModes.Information);            
 
             Console.WriteLine($"Processing {Parser.SourceFileOrDirectory}...");
 
@@ -75,7 +74,7 @@ namespace Westwind.SnippetConverter.ConsoleApp
                     List<VisualStudioSnippet> snippets;
                     if (Parser.DirectoryMode)
                     {
-                        snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory);
+                        snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory,Parser.Recurse);
                         if (snippets == null || snippets.Count < 1)
                         {
                             WriteConsole("Error: No snippets found in path: " + Parser.SourceFileOrDirectory,
@@ -108,8 +107,7 @@ namespace Westwind.SnippetConverter.ConsoleApp
                     Utils.OpenFileInExplorer(Parser.TargetFile);
             }
             else if (Parser.Mode == "vs-rider" && Parser.DirectoryMode)
-            {
-
+            {                
                 var snippets = VisualStudioSnippet.ParseSnippetFolder(Parser.SourceFileOrDirectory);
                 if (snippets == null || snippets.Count < 1)
                 {
@@ -120,6 +118,10 @@ namespace Westwind.SnippetConverter.ConsoleApp
                 try
                 {
                     JetBrainsLiveTemplate.AddVisualStudioSnippets(Parser.SourceFileOrDirectory, Parser.SnippetPrefix);
+
+                    // Target file is usually empty so get the global config file
+                    if (string.IsNullOrEmpty(Parser.TargetFile))
+                        Parser.TargetFile = JetBrainsLiveTemplate.GetRiderConfigurationFile();
                 }
                 catch (Exception ex)
                 {

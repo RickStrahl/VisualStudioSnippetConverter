@@ -27,16 +27,21 @@ namespace Westwind.SnippetConverter.ConsoleApp
         /// a directory or a file. 
         /// </summary>
         public bool DirectoryMode { get; set; }
-        
+
         /// <summary>
         /// Available modes:
         /// 
         /// vs-vscode  (default)
         /// vs-rider
         /// </summary>
-        public string Mode { get; set; }
-        
-        
+        public string Mode { get; set; } = "vs-vsode";
+                
+        /// <summary>
+        /// Determines whether the source snippet folder
+        /// recurses through child directories
+        /// </summary>
+        public bool Recurse { get; set; }
+
         /// <summary>
         /// Determines whether the parser is using verbose mode to display messages
         /// </summary>
@@ -64,14 +69,15 @@ namespace Westwind.SnippetConverter.ConsoleApp
         {
             SourceFileOrDirectory = Args[0];
             SourceFileOrDirectory = Environment.ExpandEnvironmentVariables(SourceFileOrDirectory);
-            
-            
+                        
             TargetFile = ParseStringParameterSwitch("-o", null);
             if (!string.IsNullOrEmpty(TargetFile))
                 TargetFile = Environment.ExpandEnvironmentVariables(TargetFile);
             
             Verbose = ParseParameterSwitch("-v");
-            ShowFileInExplorer = ParseParameterSwitch("-s");
+            Recurse = ParseParameterSwitch("-r");
+
+            ShowFileInExplorer = ParseParameterSwitch("-d");
             Mode = ParseStringParameterSwitch("-m",null);
             if (string.IsNullOrEmpty(Mode))
                 Mode = ParseStringParameterSwitch("--mode", "vs-vscode");
@@ -79,7 +85,12 @@ namespace Westwind.SnippetConverter.ConsoleApp
             SnippetPrefix = ParseStringParameterSwitch("-p",null);
             if (string.IsNullOrEmpty(SnippetPrefix))
                 SnippetPrefix = ParseStringParameterSwitch("--prefix",null);
-            
+
+
+            // Fix up for Visual Studio Snippet Path
+            if(Mode.StartsWith("vs-"))
+                SourceFileOrDirectory = VisualStudioSnippet.FixupSnippetPath(SourceFileOrDirectory);
+
             if (!string.IsNullOrEmpty(SourceFileOrDirectory) && 
                 Directory.Exists(SourceFileOrDirectory))
                 DirectoryMode = true;
