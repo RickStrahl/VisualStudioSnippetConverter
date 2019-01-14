@@ -2,7 +2,7 @@
   "profiles": {
     "SnippetConverter": {
       "commandName": "Project",
-      "commandLineArgs": "~2017 -d -r -p ww-"
+      "commandLineArgs": "~2017 -r -d"
     }
   }
 }

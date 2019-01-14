@@ -32,7 +32,7 @@ namespace Westwind.SnippetConverter
         [JsonIgnore]
         public string Title { get; set; }
 
-        public static JsonSerializerSettings SerializerSettings { get; set; } =  new JsonSerializerSettings
+        public static JsonSerializerSettings SerializerSettings { get; set; } = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Formatting = Formatting.Indented,
@@ -43,7 +43,7 @@ namespace Westwind.SnippetConverter
         /// </summary>
         /// <returns></returns>
         public string ToJson()
-        {            
+        {
             return JsonConvert.SerializeObject(this);
         }
 
@@ -54,16 +54,16 @@ namespace Westwind.SnippetConverter
         /// </summary>
         /// <param name="rootJson"></param>
         public void AttachToJsonRoot(JObject rootJson)
-        {            
+        {
             var title = Title.ToLower().Replace(" ", "-");
 
-            if (rootJson.TryGetValue(title, out JToken token))                           
-                rootJson.Remove(title);             
+            if (rootJson.TryGetValue(title, out JToken token))
+                rootJson.Remove(title);
 
             var ser = JsonSerializer.Create(SerializerSettings);
-            JObject jSnippet = JObject.FromObject(this,ser);
+            JObject jSnippet = JObject.FromObject(this, ser);
 
-            rootJson.Add(title, jSnippet);            
+            rootJson.Add(title, jSnippet);
         }
 
 
@@ -131,7 +131,7 @@ namespace Westwind.SnippetConverter
             else
                 rootJson = new JObject();
 
-            
+
             foreach (var snippet in snippets)
             {
                 var vsCodeSnippet = VsCodeSnippet.FromVisualStudioCodeSnippet(snippet);
@@ -141,7 +141,7 @@ namespace Westwind.SnippetConverter
                     vsCodeSnippet.Title = prefix + vsCodeSnippet.Title;
                 }
 
-                vsCodeSnippet.AttachToJsonRoot(rootJson);                
+                vsCodeSnippet.AttachToJsonRoot(rootJson);
             }
 
             using (var sw = new StreamWriter(snippetFile))
@@ -166,24 +166,24 @@ namespace Westwind.SnippetConverter
             {
                 Prefix = snippet.Shortcut.ToLowerInvariant(),
                 Title = snippet.Title,
-                Scope = snippet.Language  ?? "plain,html,javascript,typescript,css",   
-                Description = snippet.Description                                
+                Scope = snippet.Language ?? "plain,html,javascript,typescript,css",
+                Description = snippet.Description
             };
-            
+
             int counter = 1;
             var delim = snippet.Delimiter ?? "$";
             var code = snippet.Code;
 
-            vsCode.Scope = vsCode.Scope.ToLowerInvariant();          
-                        
+            vsCode.Scope = vsCode.Scope.ToLowerInvariant();
+
             // Fix up embedded references
             foreach (var dep in snippet.Declarations)
             {
                 var id = dep.Id;
                 var replace = delim + "{" + counter + "}";
                 if (!string.IsNullOrEmpty(dep.Default))
-                    replace = delim + "{" + counter + ":" + dep.Default + "}";                
-                code = code.Replace($"{delim}{id}{delim}", replace);                                     
+                    replace = delim + "{" + counter + ":" + dep.Default + "}";
+                code = code.Replace($"{delim}{id}{delim}", replace);
                 counter++;
             }
 

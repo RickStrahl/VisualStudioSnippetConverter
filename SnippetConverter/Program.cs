@@ -19,10 +19,10 @@ namespace SnippetConverter
                     ver = ver.Substring(0, ver.Length - 4);
                 if (ver.EndsWith(".0"))
                     ver = ver.Substring(0, ver.Length - 2);
-                
-                var header = $"Visual Studio Snippet Converter v{version}";
+
+                var header = $"Visual Studio Snippet Converter v{ver}";
                 var line = Utils.Replicate("-", header.Length);
-                
+
                 string options =
                     $@"
 {header}
@@ -45,12 +45,12 @@ sourceFileOrDirectory  Either an individual snippet file, or a source folder
                        ~      -  Visual Studio User Code Snippets folder (latest version installed)
                        ~2017  -  Visual Studio User Code Snippets folder (specific VS version 2019-2012)                       
 
--o <outputFile>        Output file where VS Code snippets are generated into (ignored by Rider)                        
+-o <outputFile>        Output file where VS Code snippets are generated into (ignored by Rider)   
+                       Optional special start syntax using `~` to point at User Code Snippets folder:
                        %APPDATA%\Code\User\snippets\ww-my-codesnippets.code-snippets
                        ~\ww-my-codesnippets.code-snippets
-                       ~            -   defaults to visualstudio-exported.code-snippets
+                       if omitted generates `~\exported-visualstudio.code-snippets`
                        
-
 -m,--mode              vs-vscode  (default)
                        vs-rider   experimental - (C#,VB.NET,html only)
 -d                     display the target file in Explorer
@@ -60,24 +60,24 @@ sourceFileOrDirectory  Either an individual snippet file, or a source folder
 
 Examples:
 ---------
-# vs-vscode: Individual VS Snippet (output to %APPDATA%\Code\User\snippets)
+# vs-vscode: Individual Visual Studio Snippet
 SnippetConverter ""~2017\Visual C#\My Code Snippets\proIPC.snippet"" 
                  -o ""~\ww-csharp.code-snippets"" -d
 
-# vs-vscode: All the user VS Snippets and in recursive child folers
-SnippetConverter ~2017\ -o ""~\ww-csharp.code-snippets"" -r -d
+# vs-vscode: All snippets in a folder user VS Snippets and in recursive child folers
+SnippetConverter ""~2017\Visual C#\My Code Snippets"" -o ""~\ww-csharp.code-snippets"" -r -d
 
-# vs-vscode: All the user VS Snippets and in recursive child folers
-SnippetConverter ~2017\ -o ""~\Code\User\snippets\ww-csharp.code-snippets"" -r -d
+# vs-vscode: All the user VS Snippets and in recursive child folders
+SnippetConverter ~2017\ -o ""~\Code\User\snippets\ww-all.code-snippets"" -r -d
 
-# vs-vscode: All defaults: Latest version of VS, all snippets to  %APPDATA%\Code\User\snippets\visualstudio-export.code-snippets
-SnippetConverter -r -d
+# vs-vscode: All defaults: Latest version of VS, all snippets export to  ~\visualstudio-export.code-snippets
+SnippetConverter ~ -r -d --prefix ww-
 
 # vs-rider: Individual VS Snippet
-SnippetConverter ""~2017\proIPC.snippet"" -m vs-rider 
+SnippetConverter ""~2017\proIPC.snippet"" -m vs-rider -d
 
 # vs-rider: All VS Snippets in a folder
-SnippetConverter ""~2017\Visual C#\My Code Snippets"" -m vs-rider
+SnippetConverter ""~2017\Visual C#\My Code Snippets"" -m vs-rider -d
 ";
 
                 Console.WriteLine(options);

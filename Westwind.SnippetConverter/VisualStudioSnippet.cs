@@ -182,6 +182,9 @@ namespace Westwind.SnippetConverter
             folder = Environment.ExpandEnvironmentVariables(folder);
             if (folder.StartsWith("~"))
             {
+
+                
+
                 var part = "\\Code Snippets";
 
                 if (folder.Contains("~2017"))
@@ -196,7 +199,7 @@ namespace Westwind.SnippetConverter
                 if (folder.Contains("~2012"))
                     return folder.Replace("~2012", GetUserVisualStudioVersionFolder("2012") + part);
 
-                return folder.Replace("~\\",GetUserVisualStudioVersionFolder() + part);
+                return folder.Replace("~",GetUserVisualStudioVersionFolder() + part);
             }
             
             return folder;
