@@ -20,7 +20,7 @@ The easiest way to use this tool is to install the [.NET Global Tool from NuGet]
 To install use:
 
 ```ps
-install-package dotnet-snippetconverter
+dotnet tool install --global dotnet-snippetconverter
 ```
 
 **Requires:**  
