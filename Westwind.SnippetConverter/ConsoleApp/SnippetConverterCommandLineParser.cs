@@ -57,9 +57,8 @@ namespace Westwind.SnippetConverter.ConsoleApp
         /// <summary>
         /// SnippetPrefix for generated snippets
         /// </summary>
-        public string SnippetPrefix { get; set;  }
-        
-        
+        public string SnippetPrefix { get; set;  }        
+
         public SnippetConverterCommandLineParser(string[] args = null, string cmdLine = null)
             : base(args, cmdLine)
         {

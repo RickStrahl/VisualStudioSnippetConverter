@@ -137,8 +137,11 @@ namespace Westwind.SnippetConverter
                 var vsCodeSnippet = VsCodeSnippet.FromVisualStudioCodeSnippet(snippet);
                 if (!string.IsNullOrEmpty(prefix))
                 {
-                    vsCodeSnippet.Prefix = prefix + vsCodeSnippet.Prefix;
-                    vsCodeSnippet.Title = prefix + vsCodeSnippet.Title;
+                    if(!vsCodeSnippet.Prefix.StartsWith(prefix,StringComparison.InvariantCultureIgnoreCase))
+                        vsCodeSnippet.Prefix = prefix + vsCodeSnippet.Prefix;
+
+                    if(!vsCodeSnippet.Title.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
+                        vsCodeSnippet.Title = prefix + vsCodeSnippet.Title;
                 }
 
                 vsCodeSnippet.AttachToJsonRoot(rootJson);
